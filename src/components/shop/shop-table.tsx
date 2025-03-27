@@ -78,7 +78,7 @@ export function ShopsTable({
   const { attemptToDeleteShop, shopDeleteLoading } = useShop();
 
   const paginateInfo: IPaginatorInfo = {
-    hasNextPage: data.hasNextPage,
+    hasNextPage: data?.hasNextPage,
     hasPrevPage: data.hasPrevPage,
     limit: data.limit,
     nextPage: data.nextPage,

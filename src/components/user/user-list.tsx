@@ -19,7 +19,7 @@ type IProps = {
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
-const UserList = ({ user, onPagination,onOrder,onSort }: IProps) => {
+const UserList = ({ user, onPagination, onOrder, onSort }: IProps) => {
   const rowExpandable = (record: any) => record.children?.length;
   const setShowTagAlert = useGlobalAlertStateStore(
     (state) => state.setShowTagAlert
@@ -31,8 +31,6 @@ const UserList = ({ user, onPagination,onOrder,onSort }: IProps) => {
     sort: SortOrder.Desc,
     column: null,
   });
-
- 
 
   const paginateInfo: IPaginatorInfo = {
     hasNextPage: user?.hasNextPage,
@@ -58,47 +56,85 @@ const UserList = ({ user, onPagination,onOrder,onSort }: IProps) => {
     {
       title: (
         <TitleWithSort
-          title={'firstName'}
-        
+          title={"الاسم"}
           ascending={
-            sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === "name"
           }
-          isActive={sortingObj.column === 'name'}
+          isActive={sortingObj.column === "name"}
         />
       ),
       className: "cursor-pointer",
-      dataIndex: "firstName",
-      key: "firstName",
-      align: "left",
+      dataIndex: "name",
+      key: "name",
+      align: "right",
       width: 150,
     },
 
     {
-      title: "avatar",
-      dataIndex: "avatar",
-      key: "avatar",
-      align: "center",
+      title: (
+        <TitleWithSort
+          title={"الايميل"}
+          ascending={
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === "email"
+          }
+          isActive={sortingObj.column === "email"}
+        />
+      ),
+      dataIndex: "email",
+      key: "email",
+      align: "right",
       width: 150,
-
-      render: (avatar: string, { name }: { name: string }) => {
-        if (!avatar) return null;
-        return (
-          <div className="flex justify-center items-center">
-            <Image
-              src={avatar ?? "/"}
-              alt={name}
-              layout="fixed"
-              width={30}
-              height={30}
-              className="rounded overflow-hidden"
-            />
-          </div>
-        );
-      },
     },
+    {
+      title: (
+        <TitleWithSort
+          title={"رقم الهاتف"}
+          ascending={
+            sortingObj.sort === SortOrder.Asc &&
+            sortingObj.column === "phoneNumber"
+          }
+          isActive={sortingObj.column === "phoneNumber"}
+        />
+      ),
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      align: "right",
+      width: 150,
+    },
+    {
+      title: (
+        <TitleWithSort
+          title={"حالة الحساب"}
+          ascending={
+            sortingObj.sort === SortOrder.Asc && sortingObj.column === "status"
+          }
+          isActive={sortingObj.column === "status"}
+        />
+      ),
+      dataIndex: "status",
+      key: "status",
+      align: "right",
+      width: 150,
+    },
+    // {
+    //   title: (
+    //     <TitleWithSort
+    //       title={"تاريخ التسجيل"}
+    //       ascending={
+    //         sortingObj.sort === SortOrder.Asc &&
+    //         sortingObj.column === "registrationDate"
+    //       }
+    //       isActive={sortingObj.column === "registrationDate"}
+    //     />
+    //   ),
+    //   dataIndex: "registrationDate",
+    //   key: "registrationDate",
+    //   align: "right",
+    //   width: 150,
+    // },
 
     {
-      title: "role",
+      title: "نوع المستخدم",
       dataIndex: "role",
       key: "role",
       align: "center",

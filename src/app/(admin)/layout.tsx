@@ -17,6 +17,10 @@ export default async function DashboardLayout({
     notFound();
   }
 
+  if (!currentUser) {
+    redirect("/signin");
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-background">
       <SiteHeader isAdminLayout={true} currentUser={currentUser} />

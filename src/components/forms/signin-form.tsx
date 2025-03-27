@@ -19,7 +19,6 @@ import { Input } from "../ui/input";
 import { PasswordInput } from "../ui/password-input";
 import { Icons } from "../ui/icons";
 import { toast } from "sonner";
-import { Loader } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("يرجى إدخال بريد إلكتروني صالح"),
@@ -50,20 +49,27 @@ export function SignInForm() {
   const attemptToLogin = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
-      signIn("credentials", {
+      const signInResult = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirect: false, // Handle redirect manually
-      }).then((callback) => {
-        if (callback?.ok) {
-          toast.success("تم تسجيل الدخول بنجاح");
-          router.push("/dashboard");
-        }
-
-        if (callback?.error) {
-          toast.error("حدث خطأ اثناء تسجيل الدخول");
-        }
+        redirect: false,
       });
+
+      if (signInResult?.ok) {
+        // Update last login date after successful login
+        await fetch("/api/user/update-last-login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: data.email }),
+        });
+
+        toast.success("تم تسجيل الدخول بنجاح");
+        router.push("/admin/dashboard");
+      } else if (signInResult?.error) {
+        toast.error("بيانات تسجيل الدخول غير صحيحة");
+      }
     } catch (error) {
       toast.error("فشل تسجيل الدخول");
       console.error("Login Error:", error);

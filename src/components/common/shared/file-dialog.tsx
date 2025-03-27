@@ -1,24 +1,24 @@
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Icons } from '@/components/ui/icons';
-import { useUploadMutation } from '@/hooks/upload/useUpload';
-import { cn, formatBytes } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Icons } from "@/components/ui/icons";
+import { useUploadMutation } from "@/hooks/upload/useUpload";
+import { cn, formatBytes } from "@/lib/utils";
 import {
   IUploadedImage,
   deleteAllImages,
   deleteImages,
-} from '@/services/upload.service';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import { FileRejection, useDropzone } from 'react-dropzone';
-import { Zoom } from './zoom-image';
+} from "@/services/upload.service";
+import Image from "next/image";
+import React, { useState } from "react";
+import { FileRejection, useDropzone } from "react-dropzone";
+import { Zoom } from "./zoom-image";
 import {
   FieldPath,
   FieldValues,
   Path,
   PathValue,
   UseFormSetValue,
-} from 'react-hook-form';
+} from "react-hook-form";
 
 interface FileDialogProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -52,7 +52,7 @@ export default function FileDialog<TFieldValues extends FieldValues>({
       const formData = new FormData();
       if (acceptedFiles.length) {
         for (const key of Object.keys(acceptedFiles)) {
-          formData.append('files', acceptedFiles[key]);
+          formData.append("files", acceptedFiles[key]);
         }
       }
       upload(
@@ -102,14 +102,14 @@ export default function FileDialog<TFieldValues extends FieldValues>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
   return (
-    <section className=' w-full flex gap-6 flex-col '>
+    <section className=" w-full flex gap-6 flex-col ">
       {files ? (
-        <div className='flex items-center gap-2'>
+        <div className="flex items-center gap-2">
           <Zoom>
             <Image
               src={files?.img_url}
               alt={files?.img_id}
-              className='h-20 w-20 shrink-0 rounded-md object-cover object-center'
+              className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
               width={80}
               height={80}
             />
@@ -119,79 +119,79 @@ export default function FileDialog<TFieldValues extends FieldValues>({
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant='outline' disabled={isLoading} className='w-full'>
-            Upload Images
-            <span className='sr-only'>Upload Images</span>
+          <Button variant="outline" disabled={isLoading} className="w-full">
+            رفع الصور
+            <span className="sr-only">Upload Images</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className='sm:max-w-[480px]'>
-          <p className='absolute left-5 top-4 text-base font-medium text-muted-foreground'>
+        <DialogContent className="sm:max-w-[480px]">
+          <p className="absolute left-5 top-4 text-base font-medium text-muted-foreground">
             Upload your images
           </p>
           <div
             {...getRootProps()}
             className={cn(
-              'group relative mt-8 grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
-              'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              isDragActive && 'border-muted-foreground/50',
-              isLoading && 'pointer-events-none opacity-60',
+              "group relative mt-8 grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+              "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              isDragActive && "border-muted-foreground/50",
+              isLoading && "pointer-events-none opacity-60",
               className
             )}
             {...props}
           >
             <input {...getInputProps()} />
             {isLoading ? (
-              <div className='group grid w-full place-items-center gap-1 sm:px-10'>
+              <div className="group grid w-full place-items-center gap-1 sm:px-10">
                 <Icons.upload
-                  className='h-9 w-9 animate-pulse text-muted-foreground'
-                  aria-hidden='true'
+                  className="h-9 w-9 animate-pulse text-muted-foreground"
+                  aria-hidden="true"
                 />
               </div>
             ) : isDragActive ? (
-              <div className='grid place-items-center gap-2 text-muted-foreground sm:px-5'>
+              <div className="grid place-items-center gap-2 text-muted-foreground sm:px-5">
                 <Icons.upload
-                  className={cn('h-8 w-8', isDragActive && 'animate-bounce')}
-                  aria-hidden='true'
+                  className={cn("h-8 w-8", isDragActive && "animate-bounce")}
+                  aria-hidden="true"
                 />
-                <p className='text-base font-medium'>Drop the file here</p>
+                <p className="text-base font-medium">Drop the file here</p>
               </div>
             ) : (
-              <div className='grid place-items-center gap-1 sm:px-5'>
+              <div className="grid place-items-center gap-1 sm:px-5">
                 <Icons.upload
-                  className='h-8 w-8 text-muted-foreground'
-                  aria-hidden='true'
+                  className="h-8 w-8 text-muted-foreground"
+                  aria-hidden="true"
                 />
-                <p className='mt-2 text-base font-medium text-muted-foreground'>
+                <p className="mt-2 text-base font-medium text-muted-foreground">
                   Drag {`'n'`} drop file here, or click to select file
                 </p>
-                <p className='text-sm text-slate-500'>
+                <p className="text-sm text-slate-500">
                   Please upload file with size less than {formatBytes(maxSize)}
                 </p>
               </div>
             )}
           </div>
-          <p className='text-center text-sm font-medium text-muted-foreground'>
-            You can upload up to {maxFiles} {maxFiles === 1 ? 'file' : 'files'}
+          <p className="text-center text-sm font-medium text-muted-foreground">
+            You can upload up to {maxFiles} {maxFiles === 1 ? "file" : "files"}
           </p>
           {files ? (
-            <div className='grid gap-5'>
+            <div className="grid gap-5">
               <FileCard files={files} setFiles={setFiles} />
             </div>
           ) : null}
           {files ? (
             <Button
-              type='button'
-              variant='outline'
-              size='sm'
-              className='mt-2.5 w-full'
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2.5 w-full"
               onClick={async () => {
                 await deleteImages({ public_id: files.img_id });
                 setFiles(null);
               }}
             >
-              <Icons.trash className='mr-2 h-4 w-4' aria-hidden='true' />
+              <Icons.trash className="mr-2 h-4 w-4" aria-hidden="true" />
               Remove All
-              <span className='sr-only'>Remove all</span>
+              <span className="sr-only">Remove all</span>
             </Button>
           ) : null}
         </DialogContent>
@@ -220,27 +220,27 @@ function FileCard({ files, setFiles }: FileCardProps) {
 
   React.useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         setIsOpen(false);
       }
     }
-    document.addEventListener('keydown', handleKeydown);
-    return () => document.removeEventListener('keydown', handleKeydown);
+    document.addEventListener("keydown", handleKeydown);
+    return () => document.removeEventListener("keydown", handleKeydown);
   }, []);
 
   return (
-    <div className='relative flex items-center justify-between gap-2.5'>
-      <div className='flex items-center gap-2'>
+    <div className="relative flex items-center justify-between gap-2.5">
+      <div className="flex items-center gap-2">
         <Image
           src={files?.img_url}
           alt={files?.img_id}
-          className='h-10 w-10 shrink-0 rounded-md'
+          className="h-10 w-10 shrink-0 rounded-md"
           width={40}
           height={40}
-          loading='lazy'
+          loading="lazy"
         />
-        <div className='flex flex-col'>
-          <p className='line-clamp-1 text-sm font-medium text-muted-foreground'>
+        <div className="flex flex-col">
+          <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
             {files?.img_id}
           </p>
           {/* <p className="text-xs text-slate-500">
@@ -248,19 +248,19 @@ function FileCard({ files, setFiles }: FileCardProps) {
           </p> */}
         </div>
       </div>
-      <div className='flex items-center gap-2'>
+      <div className="flex items-center gap-2">
         <Button
-          type='button'
-          variant='outline'
-          size='icon'
-          className='h-7 w-7'
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-7 w-7"
           onClick={() => {
             if (!files) return;
             handleDelete(files);
           }}
         >
-          <Icons.close className='h-4 w-4 text-white' aria-hidden='true' />
-          <span className='sr-only'>Remove file</span>
+          <Icons.close className="h-4 w-4 text-white" aria-hidden="true" />
+          <span className="sr-only">Remove file</span>
         </Button>
       </div>
     </div>

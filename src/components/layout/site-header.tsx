@@ -43,7 +43,7 @@ export function SiteHeader({
         />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            <Button className="mx-1 rounded-lg">
+            {/* <Button className="mx-1 rounded-lg">
               <Link
                 href={
                   currentUser && currentUser.isAdmin === true
@@ -53,7 +53,7 @@ export function SiteHeader({
               >
                 انشاء متجر
               </Link>
-            </Button>
+            </Button> */}
             {currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -2,25 +2,25 @@ import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from '@/components/common/shared/page-header';
-import CategoryForm from '@/components/forms/CategoryForm';
-import { Shell } from '@/components/shells/shell';
-import React from 'react';
+} from "@/components/common/shared/page-header";
+import CategoryForm from "@/components/forms/CategoryForm";
+import { Shell } from "@/components/shells/shell";
+import React from "react";
 
 const CreateCategoryPage = () => {
   return (
-    <Shell variant={'sidebar'}>
+    <Shell variant={"sidebar"}>
       <PageHeader>
         <PageHeaderHeading
-          id='create-category-header'
-          aria-labelledby='category-header-heading'
+          id="create-category-header"
+          aria-labelledby="category-header-heading"
         >
-          New Category
+          فئة جديدة
         </PageHeaderHeading>
-        <PageHeaderDescription>Add a new Category</PageHeaderDescription>
+        <PageHeaderDescription>اضافة فئة جديدة</PageHeaderDescription>
       </PageHeader>
 
-      <section className='w-full '>
+      <section className="w-full ">
         <CategoryForm />
       </section>
     </Shell>

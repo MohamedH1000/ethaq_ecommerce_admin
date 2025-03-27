@@ -15,10 +15,6 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
     notFound();
   }
 
-  if (!currentUser) {
-    redirect("/signin");
-  }
-
   if (currentUser?.isAdmin === true) {
     redirect("/admin");
   }
