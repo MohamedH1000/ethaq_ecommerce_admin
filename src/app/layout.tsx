@@ -30,7 +30,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <NextTopLoader color="#ff3366" />
+          <NextTopLoader color="#008B8B" />
           <GoogleProvider>
             <QueryProvider>
               <GlobalAlerts />

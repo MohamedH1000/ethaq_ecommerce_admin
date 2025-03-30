@@ -72,6 +72,12 @@ export const columns: ColumnDef<Category>[] = [
     header: "رقم المستخدم",
   },
   {
+    accessorKey: "username",
+    header: "اسم المستخدم",
+    cell: ({ row }) => <div>{row.original.user.name}</div>,
+  },
+
+  {
     accessorKey: "actions",
     header: "الإجراءات",
     cell: ({ row }) => {
