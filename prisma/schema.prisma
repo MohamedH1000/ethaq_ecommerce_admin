@@ -19,6 +19,9 @@ name            String
 email           String   @unique
 phone           String
 password        String?
+image           String?
+addresses       String[] @default([])
+balance         Float? @default(0)
 status          String   @default("pending") // pending, active, suspended
 creditLimit     Float    @default(5000)
 creditUsed      Float    @default(0)

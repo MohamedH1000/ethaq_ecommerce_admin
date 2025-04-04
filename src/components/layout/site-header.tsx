@@ -63,7 +63,7 @@ export function SiteHeader({
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={currentUser?.avatar}
+                        src={currentUser?.image}
                         alt={currentUser.name}
                       />
                       <AvatarFallback>{currentUser.name}</AvatarFallback>

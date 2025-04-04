@@ -6,7 +6,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { sendEmail } from "../email";
 
 export async function getSession() {
-  return await getServerSession(authOptions);
+  return await getServerSession(authOptions as any);
 }
 
 export async function getCurrentUser() {

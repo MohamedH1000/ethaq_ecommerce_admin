@@ -124,11 +124,7 @@ const Profile = ({ currentUser: user }: { currentUser: unknown }) => {
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
             <div className="flex items-center space-x-4">
               <Avatar className="h-24 w-24 border-4 border-white">
-                <AvatarImage
-                  src={`https://ui-avatars.com/api/?name=${
-                    (user as User).name
-                  }`}
-                />
+                <AvatarImage src={user.image} />
                 <AvatarFallback>{(user as User).name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="text-white">

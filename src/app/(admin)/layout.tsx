@@ -16,7 +16,7 @@ export default async function DashboardLayout({
   if (currentUser?.isAdmin === false) {
     notFound();
   }
-
+  // console.log("currentUser", currentUser);
   if (!currentUser) {
     redirect("/signin");
   }

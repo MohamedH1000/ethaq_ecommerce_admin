@@ -80,12 +80,12 @@ export const sellerAccountConfig: DashboardConfig = {
 };
 export const adminDashboardConfig: DashboardConfig = {
   sidebarNav: [
-    {
-      title: "لوحة التحكم",
-      href: "/admin/dashboard",
-      icon: "dashboard",
-      items: [],
-    },
+    // {
+    //   title: "لوحة التحكم",
+    //   href: "/admin/dashboard",
+    //   icon: "dashboard",
+    //   items: [],
+    // },
     // {
     //   title: "المتاجر",
     //   href: "/admin/shops",
