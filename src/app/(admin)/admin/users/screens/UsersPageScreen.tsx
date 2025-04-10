@@ -3,17 +3,10 @@ import {
   PageHeader,
   PageHeaderHeading,
 } from "@/components/common/shared/page-header";
-import Search from "@/components/common/shared/search";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Icons } from "@/components/ui/icons";
-import Loader from "@/components/ui/loader/loader";
 import { columns } from "@/components/user/columns";
-import UserList from "@/components/user/user-list";
 import { UserTable } from "@/components/user/user-table";
-import { useGetUsersQuery } from "@/hooks/user/getUsersQuery";
 import { SortOrder } from "@/types";
-import Link from "next/link";
 import { useState } from "react";
 
 const UserScreenComponent = ({ allUsers }: { allUsers: unknown }) => {

@@ -3,7 +3,8 @@ import prisma from "../prisma";
 import { getCurrentUser } from "./user.action";
 
 export async function createProduct(productData: any) {
-  const { name, description, price, images, categoryId, active } = productData;
+  const { name, description, price, images, categoryId, active, discount } =
+    productData;
   try {
     const response = await prisma.product.create({
       data: {
@@ -11,6 +12,7 @@ export async function createProduct(productData: any) {
         description,
         price,
         images,
+        discount,
         categoryId,
         active,
       },

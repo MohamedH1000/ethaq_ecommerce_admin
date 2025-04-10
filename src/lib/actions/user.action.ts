@@ -30,7 +30,40 @@ export async function getCurrentUser() {
     return null;
   }
 }
-
+export async function getUserById(id: String) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser?.isAdmin) {
+    throw new Error("you aren't authorized to fetch the user data");
+  }
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+        orders: {
+          include: {
+            user: true,
+            orderItems: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
+        payments: true,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function getAllUsers() {
   try {
     // Fetch all users without specifying fields (gets all by default)
@@ -83,6 +116,7 @@ export const activateAccount = async (id: string, email: string) => {
       <p>تم تفعيل حسابك بنجاح. يمكنك الآن تسجيل الدخول باستخدام البريد الإلكتروني الخاص بك (${email}) وكلمة المرور التالية:</p>
       <p style="font-size: 18px; font-weight: bold; color: #28666E;">كلمة المرور: ${plainPassword}</p>
       <p>يرجى تغيير كلمة المرور بعد تسجيل الدخول الأول لأسباب أمنية.</p>
+      <p>يرجى زيارة موقعنا عبر الرابط الاتي: https://four.fortworthtowingtx.com/.</p>
       <p>شكرًا لك،<br>فريق ايثاق</p>
     </div>
         `,

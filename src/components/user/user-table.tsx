@@ -21,6 +21,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
+import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +42,10 @@ export function UserTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const router = useRouter(); // Initialize the router
+  const handleRowClick = (userId: string) => {
+    router.push(`/admin/users/${userId}`); // Adjust the route as needed
+  };
   const table = useReactTable({
     data,
     columns,
@@ -57,22 +69,42 @@ export function UserTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Input
+        {/* <Input
           placeholder="تصفية نوع المستخدم"
           value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("role")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
-        <Input
-          placeholder="تصفية حالة الحساب"
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("status")?.setFilterValue(event.target.value)
+        /> */}
+        <Select
+          value={
+            table.getColumn("status")?.getFilterValue() === true
+              ? "active"
+              : table.getColumn("status")?.getFilterValue() === false
+              ? "inactive"
+              : "all"
           }
-          className="max-w-sm"
-        />
+          onValueChange={(value) => {
+            const filterValue =
+              value === "active"
+                ? true
+                : value === "inactive"
+                ? false
+                : undefined; // "all" option
+
+            table.getColumn("status")?.setFilterValue(filterValue);
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="حالة الحساب" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">الكل</SelectItem>
+            <SelectItem value="active">نشط</SelectItem>
+            <SelectItem value="inactive">غير نشط</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div className="rounded-md border" dir="rtl">
         <Table>
@@ -99,6 +131,9 @@ export function UserTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="cursor-pointer hover:bg-gray-50 focus:bg-gray-100"
+                  //@ts-ignore
+                  onClick={() => handleRowClick(row.original.id)} // Add onClick here
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

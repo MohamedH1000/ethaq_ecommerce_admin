@@ -46,7 +46,7 @@ const CategoriesPage = () => {
               className="flex items-center gap-1"
             >
               <Icons.plus className="w-5 h-5" />
-              <span className="hidden md:block">انشاء فئات</span>
+              <span className="hidden md:block">اضافة فئة</span>
               <span className="md:hidden">اضافة</span>
             </Link>
           </Button>

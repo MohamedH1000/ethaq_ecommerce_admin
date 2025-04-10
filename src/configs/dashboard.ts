@@ -152,11 +152,11 @@ export const adminDashboardConfig: DashboardConfig = {
       icon: "author",
       items: [],
     },
-    {
-      title: "انشاء طلب",
-      href: "/admin/request-create",
-      icon: "author",
-      items: [],
-    },
+    // {
+    //   title: "انشاء طلب",
+    //   href: "/admin/request-create",
+    //   icon: "author",
+    //   items: [],
+    // },
   ],
 };

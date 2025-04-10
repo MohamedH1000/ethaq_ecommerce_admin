@@ -10,6 +10,8 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import {
   Table,
   TableBody,
@@ -20,13 +22,6 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,29 +54,14 @@ export function OrderTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4 gap-4 flex-wrap max-md:flex-col max-md:items-start">
-        <p>حالة الطلب:</p>
-        <Select
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onValueChange={(value) => {
-            if (value === "all") {
-              table.getColumn("status")?.setFilterValue("");
-            } else {
-              table.getColumn("status")?.setFilterValue(value);
-            }
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="حالة الطلب" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">جميع الحالات</SelectItem>
-            <SelectItem value="pending">قيد الانتظار</SelectItem>
-            <SelectItem value="processing">قيد المعالجة</SelectItem>
-            <SelectItem value="shipped">تم الشحن</SelectItem>
-            <SelectItem value="delivered">تم التسليم</SelectItem>
-            <SelectItem value="cancelled">ملغى</SelectItem>
-          </SelectContent>
-        </Select>
+        <Input
+          placeholder="تصفية الطلبات"
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("id")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
       </div>
       <div className="rounded-md border" dir="rtl">
         <Table>

@@ -1,4 +1,3 @@
-import GradientLogo from "@/components/common/shared/gradient-logo";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { getCurrentUser } from "@/lib/actions/user.action";
 import Image from "next/image";

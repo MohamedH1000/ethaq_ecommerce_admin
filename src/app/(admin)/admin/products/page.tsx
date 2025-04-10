@@ -63,24 +63,11 @@ const Attributes = () => {
   return (
     <Shell variant={"sidebar"}>
       <Card className="p-8">
-        <PageHeader className="flex flex-col md:flex-row gap-4 items-center md:justify-between">
+        <PageHeader className="flex flex-col md:flex-row gap-4 items-center md:justify-between w-full">
           <PageHeaderHeading>المنتجات</PageHeaderHeading>
-          <div className="w-full md:w-3/4 flex flex-col md:flex-row items-center">
-            <div className="w-full flex items-center md:gap-3">
-              <Search onSearch={handleSearch} placeholder="Search By Name" />
-              <Button className="w-[200px] px-0 ml-3" size={"default"}>
-                <Link
-                  href={`/admin/products/create`}
-                  className="flex items-center gap-1"
-                >
-                  <Icons.plus className="w-5 h-5" />
-                  <span className="hidden md:block">انشاء منتجات</span>
-                  <span className="md:hidden">اضافة منتج</span>
-                </Link>
-              </Button>
-            </div>
 
-            <button
+          <div className="md:w-3/4 flex flex-col md:flex-row items-center">
+            {/* <button
               className="text-primary text-base font-semibold flex items-center md:ms-5 mt-5 md:mt-0"
               onClick={toggleVisible}
             >
@@ -90,7 +77,20 @@ const Attributes = () => {
               ) : (
                 <Icons.arrowDown className="ms-2" />
               )}
-            </button>
+            </button> */}
+            <div className="w-full flex items-center md:gap-3">
+              {/* <Search onSearch={handleSearch} placeholder="Search By Name" /> */}
+              <Button className="w-[200px] px-0 ml-3" size={"default"}>
+                <Link
+                  href={`/admin/products/create`}
+                  className="flex items-center gap-1"
+                >
+                  <Icons.plus className="w-5 h-5" />
+                  <span className="hidden md:block">اضافة منتج</span>
+                  <span className="md:hidden">اضافة منتج</span>
+                </Link>
+              </Button>
+            </div>
           </div>
         </PageHeader>
         <div

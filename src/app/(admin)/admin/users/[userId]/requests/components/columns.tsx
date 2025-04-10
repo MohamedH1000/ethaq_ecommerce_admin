@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { arSA } from "date-fns/locale";
+import { values } from "lodash";
 import { format } from "date-fns";
+import { arSA } from "date-fns/locale";
 // Define the shape of Category data based on your Prisma schema
 export type Category = {
   id: string;
@@ -61,6 +62,8 @@ export const columns: ColumnDef<Category>[] = [
     accessorKey: "status",
     header: "حالة الطلب",
     cell: ({ row }) => {
+      console.log("items", row.original);
+
       const [isUpdating, setIsUpdating] = useState(false);
       const router = useRouter();
 
@@ -121,10 +124,10 @@ export const columns: ColumnDef<Category>[] = [
                   className="flex items-start border-b pb-4 gap-4"
                 >
                   <div className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
-                    {item.product.images[0] && (
+                    {item?.product?.images[0] && (
                       <Image
-                        src={item.product.images[0]}
-                        alt={item.product.name}
+                        src={item.product?.images[0]}
+                        alt={item.product?.name}
                         width={96}
                         height={96}
                         className="object-cover w-full h-full"
@@ -133,17 +136,18 @@ export const columns: ColumnDef<Category>[] = [
                   </div>
                   <div className="flex-1 text-right">
                     <h3 className="font-medium text-gray-800">
-                      {item.product.name}
+                      {item?.product?.name}
                     </h3>
                     <p className="text-sm text-gray-500 line-clamp-2">
-                      {item.product.description}
+                      {item?.product?.description}
                     </p>
                     <div className="mt-2 flex justify-between items-center">
                       <span className="text-gray-600">
-                        {item.quantity} × {item.priceAtPurchase} ر.س
+                        {item?.quantity} × {item?.priceAtPurchase} ر.س
                       </span>
                       <span className="font-medium">
-                        {(item.quantity * item.priceAtPurchase).toFixed(2)} ر.س
+                        {(item?.quantity * item?.priceAtPurchase).toFixed(2)}{" "}
+                        ر.س
                       </span>
                     </div>
                   </div>
@@ -155,11 +159,13 @@ export const columns: ColumnDef<Category>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "totalAmount",
-  //   header: "اجمالي المبلغ",
-  //   cell: ({ row }) => <span>{row.original.totalAmount} SAR</span>,
-  // },
+  {
+    accessorKey: "totalAmount",
+    header: "اجمالي المبلغ",
+    cell: ({ row }) => (
+      <span>{row?.original?.totalAmount?.toFixed(2)} ريال</span>
+    ),
+  },
   // {
   //   accessorKey: "paidAmount",
   //   header: "المبلغ المدفوع",
@@ -183,6 +189,10 @@ export const columns: ColumnDef<Category>[] = [
     accessorKey: "address",
     header: "العنوان",
   },
+  // {
+  //   accessorKey: "userId",
+  //   header: "رقم المستخدم",
+  // },
   {
     accessorKey: "username",
     header: "اسم المستخدم",
@@ -190,12 +200,12 @@ export const columns: ColumnDef<Category>[] = [
       const router = useRouter();
       return (
         <div
-          onClick={(e) => {
+          onClick={(e: any) => {
             e.stopPropagation();
-            router.push(`/admin/users/${row?.original?.user?.id}`);
+            router.push(`/admin/users/${row.original.user.id}`);
           }}
         >
-          {row?.original?.user?.name}
+          {row.original.user.name}
         </div>
       );
     },

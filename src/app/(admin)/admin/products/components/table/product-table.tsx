@@ -51,30 +51,14 @@ export function ProductTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4 gap-4 flex-wrap max-md:flex-col max-md:items-start">
-        {/* <Input
-          placeholder="تصفية الايميل"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+        <Input
+          placeholder="تصفية على حسب الاسم"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <Input
-          placeholder="تصفية نوع المستخدم"
-          value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("role")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Input
-          placeholder="تصفية حالة الحساب"
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("status")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
       </div>
       <div className="rounded-md border" dir="rtl">
         <Table>
