@@ -67,7 +67,11 @@ export async function getUserById(id: String) {
 export async function getAllUsers() {
   try {
     // Fetch all users without specifying fields (gets all by default)
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      orderBy: {
+        registrationDate: "asc",
+      },
+    });
 
     // Map over the users and exclude hashedPassword while formatting dates
     const formattedUsers = users.map(({ password, ...user }) => ({
@@ -85,73 +89,313 @@ export async function getAllUsers() {
     return []; // Optional: return empty array on error for better error handling
   }
 }
+// Adjust import path for your email utility
+
+// Function to generate random password
 const generateRandomPassword = (length: number = 10): string => {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  // Character sets
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*";
+
+  // Ensure we have at least one of each required character type
+  const passwordParts = [
+    uppercase.charAt(Math.floor(Math.random() * uppercase.length)),
+    lowercase.charAt(Math.floor(Math.random() * lowercase.length)),
+    numbers.charAt(Math.floor(Math.random() * numbers.length)),
+    symbols.charAt(Math.floor(Math.random() * symbols.length)),
+  ];
+
+  // Combine all characters for the remaining length
+  const allChars = uppercase + lowercase + numbers + symbols;
+  const remainingLength = length - passwordParts.length;
+
+  for (let i = 0; i < remainingLength; i++) {
+    passwordParts.push(
+      allChars.charAt(Math.floor(Math.random() * allChars.length))
+    );
   }
-  return password;
+
+  // Shuffle the array to avoid predictable patterns
+  const shuffledPassword = passwordParts
+    .sort(() => Math.random() - 0.5)
+    .join("");
+
+  return shuffledPassword;
 };
+
+// Activate Account Function
 export const activateAccount = async (id: string, email: string) => {
   try {
     const plainPassword = generateRandomPassword(10);
     const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
     const updatedUser = await prisma.user.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: {
         status: "active",
-        password: hashedPassword, // Store the hashed password
+        password: hashedPassword,
       },
     });
+
+    const activationEmailTemplate = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+          }
+          .header {
+            background-color: #2c7a7b;
+            padding: 20px;
+            text-align: center;
+            color: white;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 24px;
+          }
+          .content {
+            padding: 30px;
+            color: #333;
+            line-height: 1.6;
+          }
+          .password-box {
+            background-color: #f0f7f7;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+            direction: ltr;
+            border: 1px solid #2c7a7b;
+          }
+          .password {
+            color: #2c7a7b;
+            font-size: 20px;
+            font-weight: bold;
+            word-break: break-all;
+          }
+          .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #2c7a7b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+          }
+          .button:hover {
+            background-color: #236e6f;
+          }
+          .footer {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+          }
+          a {
+            color: #2c7a7b;
+            text-decoration: none;
+          }
+          a:hover {
+            text-decoration: underline;
+          }
+          @media (max-width: 600px) {
+            .container {
+              margin: 10px;
+            }
+            .content {
+              padding: 20px;
+            }
+            .header h1 {
+              font-size: 20px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>تهانينا! تم تفعيل حسابك</h1>
+          </div>
+          <div class="content">
+            <h2>مرحبًا ${updatedUser.name || "المستخدم"},</h2>
+            <p>يسعدنا إبلاغك بأن حسابك قد تم تفعيله بنجاح. يمكنك الآن تسجيل الدخول باستخدام بريدك الإلكتروني (<strong>${email}</strong>) وكلمة المرور التالية:</p>
+            <div class="password-box">
+              <span class="password">${plainPassword}</span>
+            </div>
+            <p><strong>ملاحظة مهمة:</strong> نوصي بتغيير كلمة المرور بعد تسجيل الدخول الأول لضمان أمان حسابك.</p>
+            <p>ابدأ تجربتك الآن بالضغط على الزر أدناه:</p>
+            <a href="https://four.fortworthtowingtx.com/" class="button">تسجيل الدخول الآن</a>
+          </div>
+          <div class="footer">
+            <p>شكرًا لانضمامك إلينا،<br>فريق إيثاق</p>
+            <p>لأي استفسارات، تواصلوا معنا على: <a href="mailto:support@four.fortworthtowingtx.com">support@four.fortworthtowingtx.com</a></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
     await sendEmail({
       to: email,
-      subject: "تفعيل حسابك",
-      html: `
-      <div style="direction: rtl; font-family: Arial, sans-serif;">
-      <h1>مرحبًا ${updatedUser.name || "المستخدم"},</h1>
-      <p>تم تفعيل حسابك بنجاح. يمكنك الآن تسجيل الدخول باستخدام البريد الإلكتروني الخاص بك (${email}) وكلمة المرور التالية:</p>
-      <p style="font-size: 18px; font-weight: bold; color: #28666E;">كلمة المرور: ${plainPassword}</p>
-      <p>يرجى تغيير كلمة المرور بعد تسجيل الدخول الأول لأسباب أمنية.</p>
-      <p>يرجى زيارة موقعنا عبر الرابط الاتي: https://four.fortworthtowingtx.com/.</p>
-      <p>شكرًا لك،<br>فريق ايثاق</p>
-    </div>
-        `,
+      subject: "تفعيل حسابك - إيثاق",
+      html: activationEmailTemplate,
     });
+
     return updatedUser;
   } catch (error) {
-    console.log(error);
+    console.error("Error in activateAccount:", error);
+    throw new Error("فشل في تفعيل الحساب");
   }
 };
+
+// Deactivate Account Function
 export const deactivateAccount = async (id: string, email: string) => {
   try {
     const updatedUser = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        status: "inactive",
-      },
+      where: { id },
+      data: { status: "inactive" },
     });
-    await sendEmail({
-      to: email, // Send to the user's email, not admin
-      subject: "تعطيل حسابك بسبب التأخر في السداد",
-      html: `
-        <div style="direction: rtl; font-family: Arial, sans-serif;">
-          <h1>مرحبًا ${updatedUser.name || "العميل الموقر"},</h1>
-          <p>نأسف لإبلاغك أنه تم تعطيل حسابك بسبب التأخر في سداد المستحقات المالية المترتبة عليك.</p>
-          <p>يرجى تسوية المدفوعات المتأخرة في أقرب وقت ممكن لإعادة تفعيل حسابك. في حال كنت قد قمت بالدفع بالفعل، يرجى التواصل معنا لتأكيد ذلك.</p>
-          <p>للتواصل أو لمزيد من التفاصيل، يمكنك مراسلتنا على: <a href="mailto:support@[اسم_النطاق].com">support@[اسم_النطاق].com</a></p>
-          <p>شكرًا لتفهمك،<br>فريق ايثاق</p>
+
+    const deactivationEmailTemplate = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+          }
+          .header {
+            background-color: #b91c1c;
+            padding: 20px;
+            text-align: center;
+            color: white;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 24px;
+          }
+          .content {
+            padding: 30px;
+            color: #333;
+            line-height: 1.6;
+          }
+          .alert-box {
+            background-color: #fef2f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #b91c1c;
+            color: #7f1d1d;
+          }
+          .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #b91c1c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+          }
+          .button:hover {
+            background-color: #991b1b;
+          }
+          .footer {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+          }
+          a {
+            color: #b91c1c;
+            text-decoration: none;
+          }
+          a:hover {
+            text-decoration: underline;
+          }
+          @media (max-width: 600px) {
+            .container {
+              margin: 10px;
+            }
+            .content {
+              padding: 20px;
+            }
+            .header h1 {
+              font-size: 20px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>إشعار تعطيل الحساب</h1>
+          </div>
+          <div class="content">
+            <h2>مرحبًا ${updatedUser.name || "العميل الموقر"},</h2>
+            <p>نأسف لإبلاغك أن حسابك قد تم تعطيله مؤقتًا بسبب التأخر في سداد المستحقات المالية.</p>
+            <div class="alert-box">
+              <p>يرجى تسوية جميع المدفوعات المتأخرة في أقرب وقت ممكن لإعادة تفعيل حسابك.</p>
+            </div>
+            <p>في حال كنت قد قمت بالسداد بالفعل، يرجى التواصل مع فريق الدعم لتأكيد الدفع واستعادة الوصول إلى حسابك.</p>
+            <a href="mailto:support@four.fortworthtowingtx.com" class="button">تواصل مع الدعم</a>
+          </div>
+          <div class="footer">
+            <p>شكرًا لتفهمك،<br>فريق إيثاق</p>
+            <p>لأي استفسارات، يرجى مراسلتنا على: <a href="mailto:support@four.fortworthtowingtx.com">support@four.fortworthtowingtx.com</a></p>
+          </div>
         </div>
-      `,
+      </body>
+      </html>
+    `;
+
+    await sendEmail({
+      to: email,
+      subject: "تعطيل حسابك - إيثاق",
+      html: deactivationEmailTemplate,
     });
+
     return updatedUser;
   } catch (error) {
-    console.log(error);
+    console.error("Error in deactivateAccount:", error);
+    throw new Error("فشل في تعطيل الحساب");
   }
 };
 

@@ -5,7 +5,6 @@ import { getAllUsers } from "@/lib/actions/user.action";
 const UserPage = async () => {
   const allUsers = await getAllUsers();
   const users = allUsers.filter((user) => user.isAdmin === false);
-  // console.log("users", users);
   return (
     <Shell variant={"sidebar"}>
       <UserScreenComponent allUsers={users} />

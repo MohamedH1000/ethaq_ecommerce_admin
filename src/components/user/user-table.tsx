@@ -42,12 +42,13 @@ export function UserTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const reversedData = React.useMemo(() => [...data].reverse(), [data]);
   const router = useRouter(); // Initialize the router
   const handleRowClick = (userId: string) => {
     router.push(`/admin/users/${userId}`); // Adjust the route as needed
   };
   const table = useReactTable({
-    data,
+    data: reversedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

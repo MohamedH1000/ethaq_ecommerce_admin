@@ -6,15 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const page = async () => {
   const allOrders = await getAllOrders();
-  const { totalPaid, totalRemaining } = allOrders?.reduce(
-    (acc: any, order: any) => {
-      return {
-        totalPaid: acc.totalPaid + order.paidAmount,
-        totalRemaining: acc.totalRemaining + order.remainingAmount,
-      };
-    },
-    { totalPaid: 0, totalRemaining: 0 } // Initial values
-  );
+  // const { totalPaid, totalRemaining } = allOrders?.reduce(
+  //   (acc: any, order: any) => {
+  //     return {
+  //       totalPaid: acc.totalPaid + order.paidAmount,
+  //       totalRemaining: acc.totalRemaining + order.remainingAmount,
+  //     };
+  //   },
+  //   { totalPaid: 0, totalRemaining: 0 } // Initial values
+  // );
   return (
     <div className="mt-5">
       <div className="flex items-center justify-between w-full">

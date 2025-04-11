@@ -14,7 +14,7 @@ import { createPayment } from "@/lib/actions/payment.action";
 import { format } from "date-fns";
 import { arSA } from "date-fns/locale";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface OrderDetailsProps {
   order: any;
@@ -25,7 +25,15 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const totalPrice = useMemo(() => {
+    return order.orderItems.reduce(
+      (sum: any, item: any) => sum + (item.priceAtPurchase || 0),
+      0 // Initial value
+    );
+  }, [order]);
+  const taxAmount = useMemo(() => {
+    return (16 / 100) * totalPrice;
+  }, [totalPrice]);
   if (!order) return <div className="text-center py-8">لا يوجد طلب</div>;
 
   const handleAddPayment = async () => {
@@ -136,6 +144,10 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
       <div className="bg-gray-50 p-4 rounded-lg mb-6">
         <h2 className="text-xl font-semibold mb-4 text-right">ملخص الطلب</h2>
         <div className="space-y-2 text-right">
+          <div className="flex justify-between">
+            <span>ضريبة القيمة المضافة 16%:</span>
+            <span>{taxAmount.toFixed(2)} ر.س</span>
+          </div>
           <div className="flex justify-between">
             <span>المجموع:</span>
             <span>{order.totalAmount.toFixed(2)} ر.س</span>

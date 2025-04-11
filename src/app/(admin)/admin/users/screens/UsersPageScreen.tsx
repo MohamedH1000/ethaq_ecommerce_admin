@@ -15,7 +15,6 @@ const UserScreenComponent = ({ allUsers }: { allUsers: unknown }) => {
   const [orderBy, setOrder] = useState("createdAt");
   const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
   const [visible, setVisible] = useState(false);
-
   // const {
   //   data,
   //   isLoading: loading,
