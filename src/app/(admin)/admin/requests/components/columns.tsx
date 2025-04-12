@@ -113,7 +113,7 @@ export const columns: ColumnDef<Category>[] = [
               عرض
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] min-h-[600px] overflow-y-scroll">
             <div className="space-y-4">
               {row.original.orderItems?.map((item: any) => (
                 <div

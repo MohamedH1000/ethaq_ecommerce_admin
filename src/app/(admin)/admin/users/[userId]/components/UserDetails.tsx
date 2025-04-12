@@ -182,7 +182,7 @@ export default function UserDetails({ user }: UserDetailsProps) {
       </div>
 
       {/* Addresses */}
-      {user.addresses.length > 0 && (
+      {user?.addresses?.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 text-right">
             عناوين المستخدم
