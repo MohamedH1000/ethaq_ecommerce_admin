@@ -49,15 +49,10 @@ model Address {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
-  name      String
-  country   String
   street    String
   city      String
   state     String
   postcode  String
-  email     String
-  phone     String
-  isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   orders          Order[]
   @@map("addresses")
