@@ -77,7 +77,6 @@ export function OrderTable<TData, TValue>({
             <SelectItem value="all">جميع الحالات</SelectItem>
             <SelectItem value="pending">قيد الانتظار</SelectItem>
             <SelectItem value="processing">قيد المعالجة</SelectItem>
-            <SelectItem value="shipped">تم الشحن</SelectItem>
             <SelectItem value="delivered">تم التسليم</SelectItem>
             <SelectItem value="cancelled">ملغى</SelectItem>
           </SelectContent>

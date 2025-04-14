@@ -5,13 +5,14 @@ export async function getAllOrders() {
   try {
     const allOrders = await prisma.order.findMany({
       include: {
-        user: true,
         orderItems: {
           include: {
             product: true,
           },
         },
         payments: true,
+        user: true,
+        address: true,
       },
       orderBy: {
         orderDate: "desc",

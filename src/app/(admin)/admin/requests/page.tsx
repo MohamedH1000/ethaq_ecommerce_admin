@@ -35,7 +35,7 @@ const page = async () => {
         </Card>
       </div> */}
       <div className="mt-5 w-full">
-        <OrderTable columns={columns} data={allOrders} />
+        <OrderTable columns={columns} data={allOrders || []} />
       </div>
     </div>
   );

@@ -181,6 +181,11 @@ export const columns: ColumnDef<Category>[] = [
   {
     accessorKey: "address",
     header: "العنوان",
+    cell: ({ row }) => {
+      // console.log(row.original);
+      const address = row.original?.address;
+      return <div>{address?.street + " " + address?.city}</div>;
+    },
   },
   {
     accessorKey: "username",
