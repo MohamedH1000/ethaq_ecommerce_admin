@@ -97,6 +97,8 @@ model Order {
   paidAmount      Float    @default(0)
   remainingAmount Float
   isPaidFully     Boolean  @default(false)
+  isDelivered     Boolean @default(false)
+  confirmNo       String?
   // Relations
   userId          String   @db.ObjectId
   addressId       String?   @db.ObjectId
