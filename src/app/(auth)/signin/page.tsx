@@ -4,19 +4,17 @@ import Link from "next/link";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
 import { Shell } from "@/components/shells/shell";
-import AnimatedCharacters from "@/components/ui/animated-characters";
 import { SignInForm } from "@/components/forms/signin-form";
 
 export const metadata: Metadata = {
-  title: "Sign In",
-  description: "Sign in to your account",
+  title: "تسجيل الدخول",
+  description: "تسجيل الدخول لحسابك",
 };
 
 export default async function SignInPage() {

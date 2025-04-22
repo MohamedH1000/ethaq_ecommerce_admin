@@ -15,6 +15,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -98,30 +99,33 @@ export const columns: ColumnDef<User>[] = [
       const user = row.original;
       const [showActivateDialog, setShowActivateDialog] = useState(false);
       const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
-
+      const router = useRouter();
       // Function to activate account
       const handleActivate = async () => {
         try {
-          await activateAccount(user.id, user.email);
-          toast.success("تم تفعيل الحساب وإرسال البريد الإلكتروني بنجاح");
+          await activateAccount(user.id, user.phone);
+          console.log("user phone number", user.phone);
+          toast.success("تم تفعيل الحساب");
         } catch (error) {
           console.error("Activation error:", error);
           toast.error("فشل في تفعيل الحساب");
         } finally {
           setShowActivateDialog(false);
+          router.refresh();
         }
       };
 
       // Function to deactivate account
       const handleDeactivate = async () => {
         try {
-          await deactivateAccount(user.id, user.email);
-          toast.success("تم تعطيل الحساب وإرسال البريد الإلكتروني بنجاح");
+          await deactivateAccount(user.id, user.phone);
+          toast.success("تم تعطيل حسابك");
         } catch (error) {
           console.error("Deactivation error:", error);
           toast.error("فشل في تعطيل الحساب");
         } finally {
           setShowDeactivateDialog(false);
+          router.refresh();
         }
       };
 

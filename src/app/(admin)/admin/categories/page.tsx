@@ -21,13 +21,17 @@ import { getCategories } from "@/lib/actions/category.action";
 const CategoriesPage = () => {
   const [visible, setVisible] = useState(false);
   const [data, setDate] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchCategories = async () => {
+      setIsLoading(true);
       try {
         const response: unknown = await getCategories();
         setDate(response);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -93,7 +97,7 @@ const CategoriesPage = () => {
           </div>
         </div>
       </Card>
-      <CategoryTable columns={columns} data={data} />
+      <CategoryTable columns={columns} data={data} isLoading={isLoading} />
     </Shell>
   );
 };

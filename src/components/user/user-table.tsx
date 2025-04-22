@@ -63,10 +63,10 @@ export function UserTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4 gap-4 flex-wrap max-md:flex-col max-md:items-start">
         <Input
-          placeholder="تصفية الايميل"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="تصفية رقم الهاتف"
+          value={(table.getColumn("phone")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("phone")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

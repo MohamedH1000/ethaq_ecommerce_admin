@@ -17,6 +17,7 @@ const ProductForm = ({ product, categories }: any) => {
     images: product.images || ([] as string[]),
     categoryId: product.category.id || "", // Added categoryId field
     active: product.active || true,
+    discount: product.active || "",
   });
 
   // console.log("product data", productData);
@@ -42,6 +43,7 @@ const ProductForm = ({ product, categories }: any) => {
           price: "",
           images: [] as string[],
           categoryId: "", // Added categoryId field
+          discount: "",
           active: true,
         });
       }
@@ -133,6 +135,25 @@ const ProductForm = ({ product, categories }: any) => {
           step="0.01"
           min="0"
           required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div className="mb-6">
+        <label
+          htmlFor="discount"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          نسبة الخصم (اختياري)
+        </label>
+        <input
+          type="number"
+          id="discount"
+          name="discount"
+          value={productData.discount}
+          onChange={handleChange}
+          placeholder="0.00"
+          step="0.01"
+          min="0"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>

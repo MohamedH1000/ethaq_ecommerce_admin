@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,64 +14,51 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { PasswordInput } from "../ui/password-input";
 import { Icons } from "../ui/icons";
 import { toast } from "sonner";
 
+import { Input } from "../ui/input";
+import { PasswordInput } from "../ui/password-input";
+
 const loginSchema = z.object({
-  email: z.string().email("يرجى إدخال بريد إلكتروني صالح"),
-  password: z
-    .string()
-    .min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-      "كلمة المرور يجب أن تحتوي على حرف صغير، حرف كبير، ورقم على الأقل"
-    ),
+  name: z.string(),
+  password: z.string().min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export function SignInForm() {
   const router = useRouter();
-
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      name: "",
       password: "",
     },
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const attemptToLogin = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
-      const signInResult = await signIn("credentials", {
-        email: data.email,
+      const result = await signIn("credentials", {
+        name: data.name,
         password: data.password,
         redirect: false,
       });
 
-      if (signInResult?.ok) {
-        // Update last login date after successful login
-        await fetch("/api/user/update-last-login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: data.email }),
-        });
+      if (result?.error) {
+        throw new Error(result.error);
+      }
 
+      if (result?.ok) {
         toast.success("تم تسجيل الدخول بنجاح");
         router.push("/admin/users");
-      } else if (signInResult?.error) {
-        toast.error("بيانات تسجيل الدخول غير صحيحة");
+        router.refresh();
       }
     } catch (error) {
-      toast.error("فشل تسجيل الدخول");
-      console.error("Login Error:", error);
+      toast.error(error.message || "فشل تسجيل الدخول");
     } finally {
       setIsSubmitting(false);
     }
@@ -80,45 +66,53 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(attemptToLogin)(...args)}
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="email"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>الايميل</FormLabel>
+              <FormLabel>اسم المستخدم</FormLabel>
               <FormControl>
-                <Input placeholder="example@gmail.com" {...field} />
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder=""
+                  disabled={isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>الباسوورد</FormLabel>
+              <FormLabel>كلمة المرور</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="**********" {...field} />
+                <PasswordInput
+                  {...field}
+                  placeholder="********"
+                  disabled={isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
+
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? (
+            <>
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              جاري التحميل...
+            </>
+          ) : (
+            "تسجيل الدخول"
           )}
-          تسجيل الدخول
-          <span className="sr-only">Sign in</span>
         </Button>
       </form>
     </Form>

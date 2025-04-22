@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
+import { Loader } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
 export function CategoryTable<TData, TValue>({
   columns,
   data,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -115,9 +117,13 @@ export function CategoryTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center "
                 >
-                  لا توجد نتائج
+                  {isLoading ? (
+                    <Loader className="animate-spin" />
+                  ) : (
+                    "لا توجد نتائج"
+                  )}
                 </TableCell>
               </TableRow>
             )}

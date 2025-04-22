@@ -11,16 +11,16 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "email", type: "text" },
+        phoneNumber: { label: "name", type: "text" },
         password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.name || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { name: credentials.name },
         });
 
         if (!user) {
@@ -53,14 +53,14 @@ export const authOptions = {
     async jwt({ token, user }) {
       // When the user signs in, we add the email to the JWT token
       if (user) {
-        token.email = user.email; // Add email to the JWT token
+        token.name = user.name; // Add email to the JWT token
       }
       return token;
     },
     async session({ session, token }) {
       // Add the email to the session object
-      if (token?.email) {
-        session.user.email = token.email;
+      if (token?.name) {
+        session.user.name = token.name;
       }
       return session;
     },

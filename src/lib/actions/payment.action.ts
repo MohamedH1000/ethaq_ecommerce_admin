@@ -1,8 +1,7 @@
 "use server";
 
-import email from "next-auth/providers/email";
-import { sendEmail } from "../email";
 import prisma from "../prisma";
+import { sendWhatsAppMessage } from "../whatsapp/whatsapp-service";
 
 export async function createPayment(paymentData: {
   amount: number;
@@ -36,53 +35,27 @@ export async function createPayment(paymentData: {
       },
     });
     // console.log("user", user);
-
-    await sendEmail({
-      to: user.email,
-      subject: "تأكيد استلام دفعة جديدة",
-      html: `
-      <div style="direction: rtl; font-family: 'Tajawal', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <div style="text-align: center; padding: 20px; background-color: #000957; border-radius: 10px 10px 0 0;">
-          <h1 style="color: #ffffff; font-size: 28px; margin: 0;">تأكيد الدفعة</h1>
-        </div>
-        <div style="padding: 20px; color: #333;">
-          <h2 style="font-size: 22px; color: #000957; margin-bottom: 15px;">مرحبًا ${
-            user.name
-          },</h2>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            نشكرك على إتمام الدفعة بنجاح. تم خصم دفعة جديدة من الحساب المتبقي عليك بقيمة 
-            <strong style="color: #28666E;">${paymentData.amount}
-          </p>
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            المبلغ المتبقي عليك الآن هو: 
-            <strong style="color: #000957;">${
-              user.remainingAmount || 0
-            } ريال سعودي</strong>.
-          </p>
-          ${
-            paymentData.notes
-              ? `
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-              ملاحظات إضافية: ${paymentData.notes}
-            </p>
-          `
-              : ""
-          }
-          <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            يمكنك زيارة موقعنا لمتابعة تفاصيل حسابك عبر الرابط التالي: 
-            <a href="https://four.fortworthtowingtx.com/" style="color: #28666E; text-decoration: none; font-weight: bold;">اضغط هنا</a>.
-          </p>
-          <p style="font-size: 16px; line-height: 1.6;">
-            شكرًا لثقتكم بنا،<br>
-            <strong>فريق إيثاق</strong>
-          </p>
-        </div>
-        <div style="text-align: center; padding: 10px; font-size: 12px; color: #777; border-top: 1px solid #ddd;">
-          © ${new Date().getFullYear()} إيثاق. جميع الحقوق محفوظة.
-        </div>
-      </div>
-      `,
+    await sendWhatsAppMessage({
+      to: user.phone, // Make sure you have the user's WhatsApp number
+      message: `
+    📌 *تأكيد استلام دفعة جديدة*  
+    
+    مرحبًا ${user.name},  
+    
+    شكرًا لإتمام الدفعة بنجاح ✅  
+    ▫️ *المبلغ المدفوع:* ${paymentData.amount.toFixed(2)} ريال  
+    ▫️ *المبلغ المتبقي:* ${user.remainingAmount.toFixed(2) || 0} ريال  
+    
+    للمزيد من التفاصيل أو الاستفسار:  
+    🔗 https://four.fortworthtowingtx.com/  
+    
+    مع خالص الشكر،  
+    *فريق إيثاق*  
+    
+    ${new Date().getFullYear()}
+    `.trim(),
     });
+
     return payment;
   });
 }
