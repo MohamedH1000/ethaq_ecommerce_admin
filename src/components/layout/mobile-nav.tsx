@@ -1,20 +1,18 @@
 "use client";
-
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { MainNavItem, SidebarNavItem } from "@/types";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Icons } from "../ui/icons";
-import GradientLogo from "../common/shared/gradient-logo";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { adminDashboardConfig, dashboardConfig } from "@/configs/dashboard";
 import { useCurrentUser } from "@/hooks/user/useCurrentUser";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 type MobileNavProps = {
   isAdminLayout?: boolean;
@@ -29,6 +27,7 @@ export function MobileNav({
   const { currentUser } = useCurrentUser();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
+  const { resolvedTheme } = useTheme();
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -49,10 +48,14 @@ export function MobileNav({
             onClick={() => setIsOpen(false)}
           >
             <Image
-              src={"/assets/Logo.png"}
+              src={
+                resolvedTheme === "dark"
+                  ? "https://res.cloudinary.com/dbyc0sncy/image/upload/v1745439492/Logo_ge50rv.png"
+                  : "https://res.cloudinary.com/dbyc0sncy/image/upload/v1745439493/Logo_light_h4dulg.png"
+              }
               alt={"ايثاق ماركت"}
-              width={170}
-              height={170}
+              width={90}
+              height={90}
             />
           </Link>
         </div>

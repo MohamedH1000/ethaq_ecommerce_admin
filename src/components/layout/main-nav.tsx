@@ -8,8 +8,11 @@ import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 
 import GradientLogo from "../common/shared/gradient-logo";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 export function MainNav() {
+  const { resolvedTheme } = useTheme();
+
   return (
     <div className="hidden gap-6 lg:flex">
       <Link
@@ -18,10 +21,14 @@ export function MainNav() {
         className="hidden items-center space-x-2 lg:flex"
       >
         <Image
-          src={"/assets/Logo.png"}
+          src={
+            resolvedTheme === "dark"
+              ? "https://res.cloudinary.com/dbyc0sncy/image/upload/v1745439492/Logo_ge50rv.png"
+              : "https://res.cloudinary.com/dbyc0sncy/image/upload/v1745439493/Logo_light_h4dulg.png"
+          }
           alt={"ايثاق ماركت"}
-          width={190}
-          height={190}
+          width={90}
+          height={90}
         />
       </Link>
     </div>

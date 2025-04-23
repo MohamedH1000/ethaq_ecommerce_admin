@@ -7,6 +7,7 @@ const nextConfig = {
       "loremflickr.com",
       "cdnprod.mafretailproxy.com",
       "cdn.mafrservices.com",
+      "res-console.cloudinary.com",
     ],
   },
   eslint: {

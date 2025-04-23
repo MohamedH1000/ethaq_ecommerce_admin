@@ -52,7 +52,7 @@ model Address {
   street    String
   city      String
   state     String
-  postcode  String
+  postcode  String?
   createdAt DateTime @default(now())
   orders          Order[]
   @@map("addresses")
