@@ -3,42 +3,36 @@ import {
   PageHeader,
   PageHeaderHeading,
 } from "@/components/common/shared/page-header";
-import Search from "@/components/common/shared/search";
 import SortForm from "@/components/common/sort-form";
 import CategoryTypeFilter from "@/components/products/category-type-filter";
-import ProductsList from "@/components/products/product-list";
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Icons } from "@/components/ui/icons";
-import Loader from "@/components/ui/loader/loader";
-import { useGetProductsQuery } from "@/hooks/product/useGetProducts";
 import { cn } from "@/lib/utils";
 import { SortOrder } from "@/types";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ProductTable } from "./components/table/product-table";
 import { columns } from "./components/table/columns";
-import { getCategories } from "@/lib/actions/category.action";
-import { getProducts } from "@/lib/actions/product.action";
 
 const Attributes = () => {
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response: any = await getProducts();
-        setProducts(response);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
+  // const [products, setProducts] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const response: any = await getProducts();
+  //       setProducts(response);
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
@@ -131,7 +125,7 @@ const Attributes = () => {
           </div>
         </div>
       </Card>
-      <ProductTable data={products} columns={columns} isLoading={isLoading} />
+      <ProductTable columns={columns} />
       {/* <ProductsList
         isShop={false}
         products={[]}

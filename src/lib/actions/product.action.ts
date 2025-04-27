@@ -26,6 +26,8 @@ export async function createProduct(productData: any) {
 export async function updateProduct(id: string, productData: any) {
   const { name, description, price, images, categoryId, active, discount } =
     productData;
+
+  const floatDiscount = parseFloat(discount);
   try {
     const response = await prisma.product.update({
       where: {
@@ -38,7 +40,7 @@ export async function updateProduct(id: string, productData: any) {
         images,
         categoryId,
         active,
-        discount,
+        discount: floatDiscount,
       },
     });
 
@@ -61,6 +63,7 @@ export async function getProducts() {
     console.log(error);
   }
 }
+
 export async function getProductById(id: string) {
   try {
     const product = await prisma.product.findUnique({
@@ -76,6 +79,7 @@ export async function getProductById(id: string) {
     console.log(error);
   }
 }
+
 export async function activateProduct(productId: string) {
   const currentUser = await getCurrentUser();
 

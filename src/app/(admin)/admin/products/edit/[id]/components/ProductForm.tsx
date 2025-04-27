@@ -2,13 +2,15 @@
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import ImageUpload from "./ImageUpload";
-import { createProduct, updateProduct } from "@/lib/actions/product.action";
+import { updateProduct } from "@/lib/actions/product.action";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Define the expected shape of a Category
 
 const ProductForm = ({ product, categories }: any) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState({
     name: product.name || "",
@@ -17,7 +19,7 @@ const ProductForm = ({ product, categories }: any) => {
     images: product.images || ([] as string[]),
     categoryId: product.category.id || "", // Added categoryId field
     active: product.active || true,
-    discount: product.active || "",
+    discount: product.discount || "",
   });
 
   // console.log("product data", productData);
@@ -37,16 +39,8 @@ const ProductForm = ({ product, categories }: any) => {
         toast.error("حصل خطا اثناء تعديل المنتج");
       } else {
         toast.success("تم تعديل المنتج بنجاح");
-        setProductData({
-          name: "",
-          description: "",
-          price: "",
-          images: [] as string[],
-          categoryId: "", // Added categoryId field
-          discount: "",
-          active: true,
-        });
       }
+      router.refresh();
     } catch (error) {
       console.log(error);
     } finally {
@@ -61,6 +55,34 @@ const ProductForm = ({ product, categories }: any) => {
     >
   ) => {
     const { name, value } = e.target;
+    if (name === "discount") {
+      // Remove any non-digit or non-dot characters (optional)
+      const sanitizedValue = value.replace(/[^0-9.]/g, "");
+
+      // Check if the value has more than 2 decimal places
+      if (sanitizedValue.includes(".")) {
+        const decimalPart = sanitizedValue.split(".")[1];
+        if (decimalPart && decimalPart.length > 2) {
+          // Truncate to 2 decimal places
+          const truncatedValue = parseFloat(sanitizedValue).toFixed(2);
+          setProductData({
+            ...productData,
+            [name]: truncatedValue,
+          });
+          return;
+        }
+      }
+
+      // Ensure the value does not exceed 100 (from previous solution)
+      const parsedValue = parseFloat(sanitizedValue);
+      if (!isNaN(parsedValue) && parsedValue > 100) {
+        setProductData({
+          ...productData,
+          [name]: 100,
+        });
+        return;
+      }
+    }
     setProductData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -153,6 +175,7 @@ const ProductForm = ({ product, categories }: any) => {
           onChange={handleChange}
           placeholder="0.00"
           step="0.01"
+          max="100"
           min="0"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />

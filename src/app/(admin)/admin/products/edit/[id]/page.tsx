@@ -5,7 +5,7 @@ import ProductForm from "./components/ProductForm";
 import { getCategories } from "@/lib/actions/category.action";
 
 const page = async ({ params }: { params: string }) => {
-  const { id } = params;
+  const { id }: any = params;
   const product = await getProductById(id);
   const categories = await getCategories();
   return (

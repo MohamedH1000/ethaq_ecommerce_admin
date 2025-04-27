@@ -5,9 +5,6 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  ColumnFiltersState,
-  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,31 +17,60 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading: Boolean;
 }
 
 export function ProductTable<TData, TValue>({
   columns,
-  data,
-  isLoading,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [data, setData] = useState<TData[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [nameFilter, setNameFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/products?page=${page}&limit=10&name=${nameFilter}`
+      );
+      const result = await response.json();
+      setData(result.data);
+      setTotalPages(result.totalPages);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [page, nameFilter]);
+
+  const handleFilterChange = (value: string) => {
+    setNameFilter(value);
+    setPage(1); // Reset to first page when filtering
+  };
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    pageCount: totalPages,
     state: {
-      columnFilters,
+      pagination: {
+        pageIndex: page - 1, // TanStack uses 0-based index
+        pageSize: 10,
+      },
     },
   });
 
@@ -53,10 +79,8 @@ export function ProductTable<TData, TValue>({
       <div className="flex items-center py-4 gap-4 flex-wrap max-md:flex-col max-md:items-start">
         <Input
           placeholder="تصفية على حسب الاسم"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          value={nameFilter}
+          onChange={(e) => handleFilterChange(e.target.value)}
           className="max-w-sm"
         />
       </div>
@@ -118,16 +142,16 @@ export function ProductTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
         >
           السابق
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={page >= totalPages}
         >
           القادم
         </Button>

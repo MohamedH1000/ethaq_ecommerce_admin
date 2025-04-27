@@ -2,7 +2,6 @@ import { getAllOrders } from "@/lib/actions/order.action";
 import React from "react";
 import { OrderTable } from "./components/order-table";
 import { columns } from "./components/columns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const page = async () => {
   const allOrders = await getAllOrders();
