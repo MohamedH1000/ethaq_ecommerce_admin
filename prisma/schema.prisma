@@ -86,7 +86,7 @@ model Product {
   // Relations
   orderItems  OrderItem[]
   categoryId  String    @db.ObjectId
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id],onDelete: Cascade)
   @@map("products")
 }
 model Order {
