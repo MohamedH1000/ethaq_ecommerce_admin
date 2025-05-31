@@ -94,44 +94,44 @@ export async function getAllUsers() {
 // Adjust import path for your email utility
 
 // Function to generate random password
-// const generateRandomPassword = (length: number = 10): string => {
-//   // Character sets
-//   const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//   const lowercase = "abcdefghijklmnopqrstuvwxyz";
-//   const numbers = "0123456789";
-//   const symbols = "!@#$%^&*";
+const generateRandomPassword = (length: number = 10): string => {
+  // Character sets
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*";
 
-//   // Ensure we have at least one of each required character type
-//   const passwordParts = [
-//     uppercase.charAt(Math.floor(Math.random() * uppercase.length)),
-//     lowercase.charAt(Math.floor(Math.random() * lowercase.length)),
-//     numbers.charAt(Math.floor(Math.random() * numbers.length)),
-//     symbols.charAt(Math.floor(Math.random() * symbols.length)),
-//   ];
+  // Ensure we have at least one of each required character type
+  const passwordParts = [
+    uppercase.charAt(Math.floor(Math.random() * uppercase.length)),
+    lowercase.charAt(Math.floor(Math.random() * lowercase.length)),
+    numbers.charAt(Math.floor(Math.random() * numbers.length)),
+    symbols.charAt(Math.floor(Math.random() * symbols.length)),
+  ];
 
-//   // Combine all characters for the remaining length
-//   const allChars = uppercase + lowercase + numbers + symbols;
-//   const remainingLength = length - passwordParts.length;
+  // Combine all characters for the remaining length
+  const allChars = uppercase + lowercase + numbers + symbols;
+  const remainingLength = length - passwordParts.length;
 
-//   for (let i = 0; i < remainingLength; i++) {
-//     passwordParts.push(
-//       allChars.charAt(Math.floor(Math.random() * allChars.length))
-//     );
-//   }
+  for (let i = 0; i < remainingLength; i++) {
+    passwordParts.push(
+      allChars.charAt(Math.floor(Math.random() * allChars.length))
+    );
+  }
 
-//   // Shuffle the array to avoid predictable patterns
-//   const shuffledPassword = passwordParts
-//     .sort(() => Math.random() - 0.5)
-//     .join("");
+  // Shuffle the array to avoid predictable patterns
+  const shuffledPassword = passwordParts
+    .sort(() => Math.random() - 0.5)
+    .join("");
 
-//   return shuffledPassword;
-// };
+  return shuffledPassword;
+};
 
 // Activate Account Function
-export const activateAccount = async (id: string, phone: string) => {
+export const activateAccount = async (id: string, email: string) => {
   try {
-    // const plainPassword = generateRandomPassword(10);
-    // const hashedPassword = await bcrypt.hash(plainPassword, 10);
+    const plainPassword = generateRandomPassword(10);
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -292,7 +292,7 @@ export const activateAccount = async (id: string, phone: string) => {
 };
 
 // Deactivate Account Function
-export const deactivateAccount = async (id: string, phone: string) => {
+export const deactivateAccount = async (id: string, email: string) => {
   try {
     const updatedUser = await prisma.user.update({
       where: { id },

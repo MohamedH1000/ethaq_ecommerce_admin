@@ -103,8 +103,8 @@ export const columns: ColumnDef<User>[] = [
       // Function to activate account
       const handleActivate = async () => {
         try {
-          await activateAccount(user.id, user.phone);
-          console.log("user phone number", user.phone);
+          await activateAccount(user.id, user.email);
+          // console.log("user email", user.email);
           toast.success("تم تفعيل الحساب");
         } catch (error) {
           console.error("Activation error:", error);
@@ -118,7 +118,7 @@ export const columns: ColumnDef<User>[] = [
       // Function to deactivate account
       const handleDeactivate = async () => {
         try {
-          await deactivateAccount(user.id, user.phone);
+          await deactivateAccount(user.id, user.email);
           toast.success("تم تعطيل حسابك");
         } catch (error) {
           console.error("Deactivation error:", error);
