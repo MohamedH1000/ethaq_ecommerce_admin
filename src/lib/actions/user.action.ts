@@ -3,8 +3,6 @@ import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { sendWhatsAppMessage } from "../whatsapp/whatsapp-service";
-import email from "next-auth/providers/email";
 import { sendEmail } from "../email";
 
 export async function getSession() {
@@ -132,13 +130,28 @@ export const activateAccount = async (id: string, email: string) => {
   try {
     const plainPassword = generateRandomPassword(10);
     const hashedPassword = await bcrypt.hash(plainPassword, 10);
-
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        status: "active",
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
       },
     });
+    let updatedUser;
+    if (!user?.password) {
+      updatedUser = await prisma.user.update({
+        where: { id },
+        data: {
+          status: "active",
+          password: hashedPassword,
+        },
+      });
+    } else {
+      updatedUser = await prisma.user.update({
+        where: { id },
+        data: {
+          status: "active",
+        },
+      });
+    }
 
     const activationEmailTemplate = `
       <!DOCTYPE html>
