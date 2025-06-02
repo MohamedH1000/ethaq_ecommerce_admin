@@ -29,7 +29,7 @@ const ProductForm = ({ categories }: ProductFormProps) => {
     discount: "",
   });
 
-  // console.log("product data", productData);
+  console.log("product data", productData);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +71,34 @@ const ProductForm = ({ categories }: ProductFormProps) => {
     >
   ) => {
     const { name, value } = e.target;
+    if (name === "discount") {
+      // Remove any non-digit or non-dot characters (optional)
+      const sanitizedValue = value.replace(/[^0-9.]/g, "");
+
+      // Check if the value has more than 2 decimal places
+      if (sanitizedValue.includes(".")) {
+        const decimalPart = sanitizedValue.split(".")[1];
+        if (decimalPart && decimalPart.length > 2) {
+          // Truncate to 2 decimal places
+          const truncatedValue = parseFloat(sanitizedValue).toFixed(2);
+          setProductData({
+            ...productData,
+            [name]: truncatedValue,
+          });
+          return;
+        }
+      }
+
+      // Ensure the value does not exceed 100 (from previous solution)
+      const parsedValue = parseFloat(sanitizedValue);
+      if (!isNaN(parsedValue) && parsedValue > 100) {
+        setProductData({
+          ...productData,
+          [name]: 100,
+        });
+        return;
+      }
+    }
     setProductData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -163,6 +191,7 @@ const ProductForm = ({ categories }: ProductFormProps) => {
           onChange={handleChange}
           placeholder="0.00"
           step="0.01"
+          max="100"
           min="0"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
