@@ -84,15 +84,20 @@ export const columns: ColumnDef<Category>[] = [
           onValueChange={handleStatusChange}
           disabled={isUpdating}
         >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="حالة الطلب" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pending">قيد الانتظار</SelectItem>
-            <SelectItem value="processing">قيد المعالجة</SelectItem>
-            {/* <SelectItem value="delivered">تم التسليم</SelectItem> */}
-            <SelectItem value="cancelled">ملغى</SelectItem>
-          </SelectContent>
+          {row.original.status === "delivered" && <p>تم التسليم</p>}
+          {row.original.status !== "delivered" && (
+            <>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="حالة الطلب" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">قيد الانتظار</SelectItem>
+                <SelectItem value="processing">قيد المعالجة</SelectItem>
+                {/* <SelectItem value="delivered">تم التسليم</SelectItem> */}
+                <SelectItem value="cancelled">ملغى</SelectItem>
+              </SelectContent>
+            </>
+          )}
         </Select>
       );
     },
