@@ -61,12 +61,12 @@ export const columns: ColumnDef<Category>[] = [
     accessorKey: "status",
     header: "حالة الطلب",
     cell: ({ row }) => {
+      // console.log(row.original);
       const [isUpdating, setIsUpdating] = useState(false);
       const router = useRouter();
-
       const handleStatusChange = async (newStatus: string) => {
         setIsUpdating(true);
-        console.log(newStatus, "new status");
+        // console.log(newStatus, "new status");
         try {
           await updateOrderStatus(row.original.id, newStatus);
           toast.success("تم تحديث حالة الطلب بنجاح");
@@ -90,7 +90,7 @@ export const columns: ColumnDef<Category>[] = [
           <SelectContent>
             <SelectItem value="pending">قيد الانتظار</SelectItem>
             <SelectItem value="processing">قيد المعالجة</SelectItem>
-            <SelectItem value="delivered">تم التسليم</SelectItem>
+            {/* <SelectItem value="delivered">تم التسليم</SelectItem> */}
             <SelectItem value="cancelled">ملغى</SelectItem>
           </SelectContent>
         </Select>

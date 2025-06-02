@@ -25,15 +25,22 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const totalPrice = useMemo(() => {
-    return order.orderItems.reduce(
-      (sum: any, item: any) => sum + (item.priceAtPurchase || 0),
-      0 // Initial value
-    );
-  }, [order]);
-  const taxAmount = useMemo(() => {
-    return (16 / 100) * totalPrice;
+  const totalPrice = order?.orderItems.reduce((sum, item) => {
+    // Calculate discounted price (if discount exists)
+    const discountedPrice = item.product.discount
+      ? item.priceAtPurchase * (1 - item.product.discount / 100)
+      : item.priceAtPurchase;
+
+    // Add to total (quantity * discounted price)
+    return sum + item.quantity * discountedPrice;
+  }, 0);
+  const profitAmount = useMemo(() => {
+    return Number(totalPrice) * (15 / 100);
   }, [totalPrice]);
+
+  const taxAmount = useMemo(() => {
+    return (Number(profitAmount) + Number(totalPrice)) * (15 / 100);
+  }, [totalPrice, profitAmount]);
   if (!order) return <div className="text-center py-8">لا يوجد طلب</div>;
 
   const handleAddPayment = async () => {
@@ -128,10 +135,29 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
                 </p>
                 <div className="mt-2 flex justify-between items-center">
                   <span className="text-gray-600">
-                    {item.quantity} × {item.priceAtPurchase} ر.س
+                    {item.quantity} ×{" "}
+                    {item.product.discount > 0
+                      ? Number(
+                          item.product.price * (1 - item.product.discount / 100)
+                        )
+                      : item.priceAtPurchase}{" "}
+                    ر.س{" "}
                   </span>
                   <span className="font-medium">
-                    {(item.quantity * item.priceAtPurchase).toFixed(2)} ر.س
+                    {item.product?.discount > 0 ? (
+                      <p className="text-base text-gray-700 dark:text-white">
+                        {(
+                          item?.product.price *
+                          (1 - item?.product.discount / 100) *
+                          item.quantity
+                        ).toFixed(2)}{" "}
+                        ريال
+                      </p>
+                    ) : (
+                      <p className="text-base text-gray-700 dark:text-white">
+                        {(item.product.price * item.quantity).toFixed(2)} ريال
+                      </p>
+                    )}{" "}
                   </span>
                 </div>
               </div>
@@ -145,7 +171,11 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
         <h2 className="text-xl font-semibold mb-4 text-right">ملخص الطلب</h2>
         <div className="space-y-2 text-right">
           <div className="flex justify-between">
-            <span>ضريبة القيمة المضافة 16%:</span>
+            <span>قيمة نسبة المرابحة %15:</span>
+            <span>{profitAmount.toFixed(2)} ر.س</span>
+          </div>
+          <div className="flex justify-between">
+            <span>ضريبة القيمة المضافة 15%:</span>
             <span>{taxAmount.toFixed(2)} ر.س</span>
           </div>
           <div className="flex justify-between">

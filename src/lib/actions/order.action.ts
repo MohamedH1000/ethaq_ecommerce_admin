@@ -47,15 +47,55 @@ export async function getOrderById(id: string) {
 }
 
 export async function updateOrderStatus(orderId: string, status: string) {
-  // console.log(orderId, status, "order and status");
   try {
-    const response = await prisma.order.update({
+    // First get the current order and user
+    const order = await prisma.order.findUnique({
       where: { id: orderId },
-      data: { status },
+      include: { user: true },
     });
-    console.log(response, "response");
-    return response;
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    // Calculate the amount change based on status transition
+    let amountChange = 0;
+    const previousStatus = order.status;
+
+    // If order is being cancelled and wasn't already cancelled
+    if (status === "cancelled" && previousStatus !== "cancelled") {
+      // Add the amount back to user's remaining amount
+      amountChange = -order.totalAmount;
+    }
+    // If order is being uncancelled (status changed from cancelled to something else)
+    else if (status !== "cancelled" && previousStatus === "cancelled") {
+      // Subtract the amount from user's remaining amount
+      amountChange = order.totalAmount;
+    }
+
+    // Update the order and user in a transaction
+    const [updatedOrder] = await prisma.$transaction([
+      prisma.order.update({
+        where: { id: orderId },
+        data: { status },
+      }),
+      ...(amountChange !== 0
+        ? [
+            prisma.user.update({
+              where: { id: order.userId },
+              data: {
+                remainingAmount: {
+                  increment: amountChange,
+                },
+              },
+            }),
+          ]
+        : []),
+    ]);
+
+    return updatedOrder;
   } catch (error) {
-    console.log(error);
+    console.error("Error updating order status:", error);
+    throw error;
   }
 }
