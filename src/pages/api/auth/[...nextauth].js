@@ -16,7 +16,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.name || !credentials?.password) {
-          throw new Error("Invalid credentials");
+          throw new Error("اسم المستخدم او كلمة المرور غير صحيحة");
         }
 
         const user = await prisma.user.findUnique({
@@ -24,7 +24,7 @@ export const authOptions = {
         });
 
         if (!user) {
-          throw new Error("Invalid credentials");
+          throw new Error("هذا المستخدم غير مسجل");
         }
 
         const isCorrectPassword = await bcrypt.compare(
@@ -33,7 +33,7 @@ export const authOptions = {
         );
 
         if (!isCorrectPassword) {
-          throw new Error("Invalid credentials");
+          throw new Error("كلمة المرور غير صحيحة");
         }
 
         return user; // Make sure to return the user object
